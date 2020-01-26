@@ -23,9 +23,11 @@ done
 apply_config_value "_icon_wifi" "ICON_WIFI"
 apply_config_value "_icon_no_wifi" "ICON_NO_WIFI"
 
-RAW=($(nmcli -t -f active,ssid,signal dev wifi | egrep '^ja' | tr ':' "\n"))
-SSID=${RAW[1]}
-SIGNAL=${RAW[2]}
+#echo $(nmcli -t -f active,ssid,signal dev wifi | egrep '^ja')
+RAW=$(nmcli -t -f active,ssid dev wifi | egrep '^ja')
+SSID=${RAW:3}
+RAW=$(nmcli -t -f active,signal dev wifi | egrep '^ja')
+SIGNAL=${RAW:3}
 
 FORMAT="{icon} {ssid} {signal}%"
 FORMAT_NO_CONNECTION="{icon} {ssid}"
@@ -51,6 +53,6 @@ fi
 
 OUTPUT=$(format_output "$FORMAT")
 
-pango_markup "$OUTPUT" $(get_color_by_perc $SIGNAL)
+pango_markup "$OUTPUT" "$(get_color_by_perc $SIGNAL)"
 
 exit 0
