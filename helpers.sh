@@ -80,7 +80,8 @@ function get_value_by_index {
 function scale_perc_to_level {
 	perc=$1
 	levels_count=$2
-	level=$(echo "$perc*($levels_count-1)/100" | bc)
+	# +0.5 and cut at decimal point to round to integer
+	level=$(printf "%.0f" $(echo "scale=2;($perc*($levels_count-1)/100)+0.5" | bc))
 	echo $level
 }
 
@@ -94,6 +95,7 @@ function get_color_by_level {
 
 function get_color_by_perc {
 	perc=$1
+	if [ $perc -gt 100 ]; then perc=100; fi 
 	get_color_by_level $(scale_perc_to_level $perc 11)
 }
 
