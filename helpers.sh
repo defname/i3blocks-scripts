@@ -14,6 +14,9 @@ color08="#A3C190"
 color09="#95B890"
 color10="#88B090"
 
+# use dots instead of commas, that caused errors with printf
+LC_NUMERIC="en_US.UTF-8"
+
 # colorize text with mango markup ($markup is a global variable, set by
 # i3blocks and can be configured in the i3blocks configuration file)
 #
@@ -22,10 +25,12 @@ function pango_markup {
 	if [ $# -ne 2 ]; then echo "pango_markup" && exit 1; fi
 	local str=$1
 	local color=$2
-	if [ "$markup" != "pango" ]; then
-		echo $str
-	else
-		echo "<span color=\"$color\">$str</span>"
+	if [ -n "$str" ]; then
+		if [ "$markup" != "pango" ]; then
+			echo $str
+		else
+			echo "<span color=\"$color\">$str</span>"
+		fi
 	fi
 }	
 
@@ -81,8 +86,8 @@ function scale_perc_to_level {
 	perc=$1
 	levels_count=$2
 	# +0.5 and cut at decimal point to round to integer
-	level=$(printf "%.0f" $(echo "scale=2;($perc*($levels_count-1)/100)+0.5" | bc))
-	echo $level
+	level=$(printf "%.2f" $(echo "scale=2;($perc*($levels_count-1)/100)+0.5" | bc))
+	echo ${level/\.*/}
 }
 
 # print the color associated with given level between 0 an 10 (including)
@@ -95,10 +100,22 @@ function get_color_by_level {
 
 function get_color_by_perc {
 	perc=$1
-	if [ $perc -gt 100 ]; then perc=100; fi 
-	get_color_by_level $(scale_perc_to_level $perc 11)
+	if [ "$perc" -gt "100" ]; then perc="100"; fi 
+	get_color_by_level "$(scale_perc_to_level $perc 11)"
 }
 
+function generate_progress_bar {
+	perc=$1
+	OUT=""
+	for n in $(seq 10 10 100); do
+		if [ "$n" -le "$perc" ]; then
+			OUT="$OUT█"
+		else
+			OUT="$OUT░"
+		fi
+	done
+	echo "$OUT"
+}
 
 # apply the i3blocks config
 for n in $(seq 0 10); do

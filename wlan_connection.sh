@@ -11,11 +11,11 @@ source "$(dirname $0)/helpers.sh"
 
 ICON_WIFI=$(echo -e \\uf1eb)
 ICON_NO_WIFI="X"
-ICON_WIFI_0="0"
-ICON_WIFI_1="1"
-ICON_WIFI_2="2"
-ICON_WIFI_3="3"
-ICON_WIFI_4="4"
+ICON_WIFI_0="____"
+ICON_WIFI_1="▂___"
+ICON_WIFI_2="▂▄__"
+ICON_WIFI_3="▂▄▅_"
+ICON_WIFI_4="▂▄▅▆"
 
 for n in $(seq 0 4); do
 	apply_config_value "_icon_wifi_$n" "ICON_WIFI_$n"
