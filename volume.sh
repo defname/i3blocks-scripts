@@ -16,7 +16,7 @@ ICON_VOL_0=$(echo -e \\uf027)
 ICON_VOL_1=$(echo -e \\uf028)
 ICON_VOL_COUNT=2
 ICON_VOL_OFF=$(echo -e \\uf026)
-ICON_MUTE=$(echo -e \\uf6a9)
+ICON_MUTE=$(echo -e \\uf026)
 
 for n in $(seq 0 $ICON_VOL_COUNT); do
 	apply_config_value "_icon_vol_$n" "ICON_VOL_$n"

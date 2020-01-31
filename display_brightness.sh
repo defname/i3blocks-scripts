@@ -11,8 +11,10 @@ apply_config_value "_format" "FORMAT"
 
 RAW=($(brightnessctl -m | tr "," "\n"))
 BRIGHTNESS=${RAW[3]::-1} # delete lasst character "%"
-echo $(generate_progress_bar "$BRIGHTNESS")
+#echo $(generate_progress_bar "$BRIGHTNESS")
+echo "$(generate_gauge "$BRIGHTNESS") $BRIGHTNESS%"
 exit 0
+
 ICON=$(echo -e \\uf530)
 ICON_0="█␖"
 ICON_1=$(echo -e \\uf028)

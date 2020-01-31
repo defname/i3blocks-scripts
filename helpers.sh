@@ -14,6 +14,9 @@ color08="#A3C190"
 color09="#95B890"
 color10="#88B090"
 
+# for later use
+# ▁▂▃▄▅▆▇█
+
 # use dots instead of commas, that caused errors with printf
 LC_NUMERIC="en_US.UTF-8"
 
@@ -115,6 +118,15 @@ function generate_progress_bar {
 		fi
 	done
 	echo "$OUT"
+}
+
+function generate_gauge {
+	level=$(scale_perc_to_level $1 8)
+	diff=$(bc <<< "7-$level")
+	gauge="▁▂▃▄▅▆▇█"
+	empty="▁▁▁▁▁▁▁▁"
+	out="${gauge:0:$level}${empty:0:$diff}"
+	echo $out
 }
 
 # apply the i3blocks config
