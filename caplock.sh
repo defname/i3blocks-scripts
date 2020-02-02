@@ -5,7 +5,6 @@
 
 source "$(dirname $0)/helpers.sh"
 
-# str containing {perc} and/or {icon} defining how stuff is displayed 
 FORMAT="{text}"
 ENABLED_CAPTION="CAPLOCK"
 apply_config_value "_format" "FORMAT"
