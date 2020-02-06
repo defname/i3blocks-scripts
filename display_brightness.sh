@@ -19,7 +19,7 @@ apply_config_value "_icon" "ICON"
 declare -A FIELDS
 FIELDS["brightness"]=$BRIGHTNESS
 FIELDS["icon"]=$ICON
-FIELDS["color"]=$(get_color_by_perc $BRIGHTNESS)
+FIELDS["color"]=$(get_color_by_perc $(echo "100-$BRIGHTNESS" | bc))
 
 echo $(format_output "$FORMAT")
 

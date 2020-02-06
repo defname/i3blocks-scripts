@@ -34,7 +34,7 @@ if [ "$MUTE" = "true" ]; then ICON=$ICON_MUTE; fi
 declare -A FIELDS
 FIELDS["vol"]="$VOLUME"
 FIELDS["icon"]="$ICON"
-FIELDS["color"]="$(get_color_by_perc $VOLUME)"
+FIELDS["color"]="$(get_color_by_perc $(echo "100-$VOLUME" | bc))"
 
 echo "$(format_output "$FORMAT")"
 
