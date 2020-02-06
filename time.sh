@@ -1,15 +1,25 @@
 #!/bin/sh
+
+source "$(dirname $0)/helpers.sh"
+
 weekday=$(date "+%A")
 time=$(date "+%H:%M ")
-day=$(date "+%d. %B")
+date=$(date "+%d. %B")
 #Das icon der Uhrzeit anpassen
 hour=$(date "+%I")
 
-if [ -z "$button" ]; then
-	echo "$(echo -e \\ue903) $time"
-	exit 0
-fi
-echo "$(echo -e \\ue91b) $weekday $day"
+ICON=$(echo -e \\ue903) 
+
+FORMAT="{time}"
+apply_config_value "_format" "FORMAT"
+
+declare -A FIELDS
+FIELDS["icon"]=$ICON
+FIELDS["weekday"]=$weekday
+FIELDS["date"]=$date
+FIELDS["time"]=$time
+
+echo $(format_output "$FORMAT")
 exit 0
 
 case $hour in

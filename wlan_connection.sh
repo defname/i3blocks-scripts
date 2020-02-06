@@ -17,19 +17,32 @@ ICON_WIFI_2=$(echo -e \\ue938)
 ICON_WIFI_3=$(echo -e \\ue936)
 ICON_WIFI_COUNT=4
 
-apply_config_value "_icon_wifi_count" "ICON_WIFI_COUNT"
-apply_config_value_array "_icon_wifi_" "ICON_WIFI_" "$ICON_WIFI_COUNT"
+ICON_WIFI_SECURED_0=$(echo -e \\ue93b)
+ICON_WIFI_SECURED_1=$(echo -e \\ue939)
+ICON_WIFI_SECURED_2=$(echo -e \\ue937)
+ICON_WIFI_SECURED_3=$(echo -e \\ue935)
+ICON_WIFI_SECURED_COUNT=4
+
+
 apply_config_value "_icon_wifi" "ICON_WIFI"
 apply_config_value "_icon_no_wifi" "ICON_NO_WIFI"
+
+apply_config_value "_icon_wifi_count" "ICON_WIFI_COUNT"
+apply_config_value_array "_icon_wifi_" "ICON_WIFI_" "$ICON_WIFI_COUNT"
+
+apply_config_value "_icon_wifi_secured_count" "ICON_WIFI_SECURED_COUNT"
+apply_config_value_array "_icon_wifi_secured_" "ICON_WIFI_SECURED_" "$ICON_WIFI_SECUREDCOUNT"
 
 #echo $(nmcli -t -f active,ssid,signal dev wifi | egrep '^ja')
 RAW=$(nmcli -t -f active,ssid dev wifi | egrep '^ja')
 SSID=${RAW:3}
 RAW=$(nmcli -t -f active,signal dev wifi | egrep '^ja')
 SIGNAL=${RAW:3}
+RAW=$(nmcli -t -f active,security dev wifi | egrep '^ja')
+SECURE=${RAW:3}
 
 FORMAT="{icon} {ssid} {signal}%"
-FORMAT_NO_CONNECTION="{icon} {ssid}"
+FORMAT_NO_CONNECTION="{icon}"
 apply_config_value "_format" "FORMAT"
 apply_config_value "_format_no_connection" "FORMAT_NO_CONNECTION"
 
@@ -43,12 +56,14 @@ if [ -z "$SSID" ]; then
 	FIELDS["ssid"]="-disconnected-"
 	FIELDS["signal"]="0"
 	FIELDS["icon"]=$ICON_NO_WIFI
-else
-	# use icons for signal strength if set in config
-	if [ "$_use_signal_icons" == "1" ]; then
-		FIELDS["icon"]=$(get_value_by_index $(scale_perc_to_level $SIGNAL $ICON_WIFI_COUNT) "ICON_WIFI_" '%s%d')
-	fi
 fi
+
+if [ -n $SECURE ]; then
+	FIELDS["icon"]=$(get_value_by_index $(scale_perc_to_level $SIGNAL $ICON_WIFI_COUNT) "ICON_WIFI_SECURED_" '%s%d')
+else
+    FIELDS["icon"]=$(get_value_by_index $(scale_perc_to_level $SIGNAL $ICON_WIFI_COUNT) "ICON_WIFI_" '%s%d')
+fi
+
 FIELDS["color"]="$(get_color_by_perc $SIGNAL)"
 
 echo "$(format_output "$FORMAT")"
