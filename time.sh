@@ -6,10 +6,10 @@ day=$(date "+%d. %B")
 hour=$(date "+%I")
 
 if [ -z "$button" ]; then
-	echo "$(echo -e \\uf017) $time"
+	echo "$(echo -e \\ue903) $time"
 	exit 0
 fi
-echo "$(echo -e \\uf783) $weekday $day"
+echo "$(echo -e \\ue91b) $weekday $day"
 exit 0
 
 case $hour in

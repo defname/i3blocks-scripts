@@ -10,16 +10,15 @@
 source "$(dirname $0)/helpers.sh"
 
 ICON_WIFI=$(echo -e \\uf1eb)
-ICON_NO_WIFI="X"
-ICON_WIFI_0="____"
-ICON_WIFI_1="▂___"
-ICON_WIFI_2="▂▄__"
-ICON_WIFI_3="▂▄▅_"
-ICON_WIFI_4="▂▄▅▆"
+ICON_NO_WIFI=$(echo -e \\ue933)
+ICON_WIFI_0=$(echo -e \\ue93c)
+ICON_WIFI_1=$(echo -e \\ue93a)
+ICON_WIFI_2=$(echo -e \\ue938)
+ICON_WIFI_3=$(echo -e \\ue936)
+ICON_WIFI_COUNT=4
 
-for n in $(seq 0 4); do
-	apply_config_value "_icon_wifi_$n" "ICON_WIFI_$n"
-done
+apply_config_value "_icon_wifi_count" "ICON_WIFI_COUNT"
+apply_config_value_array "_icon_wifi_" "ICON_WIFI_" "$ICON_WIFI_COUNT"
 apply_config_value "_icon_wifi" "ICON_WIFI"
 apply_config_value "_icon_no_wifi" "ICON_NO_WIFI"
 
@@ -47,12 +46,12 @@ if [ -z "$SSID" ]; then
 else
 	# use icons for signal strength if set in config
 	if [ "$_use_signal_icons" == "1" ]; then
-		FIELDS["icon"]=$(get_value_by_index $(scale_perc_to_level $SIGNAL 5) "ICON_WIFI_" '%s%d')
+		FIELDS["icon"]=$(get_value_by_index $(scale_perc_to_level $SIGNAL $ICON_WIFI_COUNT) "ICON_WIFI_" '%s%d')
 	fi
 fi
+FIELDS["color"]="$(get_color_by_perc $SIGNAL)"
 
-OUTPUT=$(format_output "$FORMAT")
-
-pango_markup "$OUTPUT" "$(get_color_by_perc $SIGNAL)"
+echo "$(format_output "$FORMAT")"
 
 exit 0
+

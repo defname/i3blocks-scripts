@@ -43,12 +43,22 @@ function pango_markup {
 #    intern_varname: name of the internal variable
 # give variable names without '$' in the beginning!
 function apply_config_value {
-	global_varname=$1
-	intern_varname=$2
-	
+	local global_varname=$1
+	local intern_varname=$2
+
 	if [ -n "$(eval "echo \$$global_varname")" ]; then
 		eval "$intern_varname=\$$global_varname"
 	fi
+}
+
+function apply_config_value_array {
+    local global_varname=$1
+    local intern_varname=$2
+    local count=$3
+
+    for n in $(seq 0 $(echo "$count-1" | bc)); do
+        apply_config_value "$global_varname$n" "$intern_varname$n"
+    done
 }
 
 # Put the content in the formats string
