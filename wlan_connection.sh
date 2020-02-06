@@ -11,6 +11,7 @@ source "$(dirname $0)/helpers.sh"
 
 ICON_WIFI=$(echo -e \\uf1eb)
 ICON_NO_WIFI=$(echo -e \\ue933)
+ICON_NO_WIFI_CONNECTION=$(echo -e \\ue934)
 ICON_WIFI_0=$(echo -e \\ue93c)
 ICON_WIFI_1=$(echo -e \\ue93a)
 ICON_WIFI_2=$(echo -e \\ue938)
@@ -33,13 +34,20 @@ apply_config_value_array "_icon_wifi_" "ICON_WIFI_" "$ICON_WIFI_COUNT"
 apply_config_value "_icon_wifi_secured_count" "ICON_WIFI_SECURED_COUNT"
 apply_config_value_array "_icon_wifi_secured_" "ICON_WIFI_SECURED_" "$ICON_WIFI_SECUREDCOUNT"
 
-#echo $(nmcli -t -f active,ssid,signal dev wifi | egrep '^ja')
-RAW=$(nmcli -t -f active,ssid dev wifi | egrep '^ja')
-SSID=${RAW:3}
-RAW=$(nmcli -t -f active,signal dev wifi | egrep '^ja')
-SIGNAL=${RAW:3}
-RAW=$(nmcli -t -f active,security dev wifi | egrep '^ja')
-SECURE=${RAW:3}
+WIFI_ENABLED="0"
+SSID=""
+SIGNAL="0"
+
+# check if WIFI is generally enabled
+if [ "$(nmcli -t -f wifi general status)" == "enabled" ]; then
+    WIFI_ENABLED="1"
+    RAW=$(nmcli -t -f active,ssid dev wifi | egrep '^ja')
+    SSID=${RAW:3}
+    RAW=$(nmcli -t -f active,signal dev wifi | egrep '^ja')
+    SIGNAL=${RAW:3}
+    RAW=$(nmcli -t -f active,security dev wifi | egrep '^ja')
+    SECURE=${RAW:3}
+fi
 
 FORMAT="{icon} {ssid} {signal}%"
 FORMAT_NO_CONNECTION="{icon}"
@@ -51,17 +59,24 @@ FIELDS["ssid"]=$SSID
 FIELDS["signal"]=$SIGNAL
 FIELDS["icon"]=$ICON_WIFI
 
-if [ -z "$SSID" ]; then
-	FORMAT=$FORMAT_NO_CONNECTION
-	FIELDS["ssid"]="-disconnected-"
-	FIELDS["signal"]="0"
-	FIELDS["icon"]=$ICON_NO_WIFI
-fi
-
-if [ -n $SECURE ]; then
-	FIELDS["icon"]=$(get_value_by_index $(scale_perc_to_level $SIGNAL $ICON_WIFI_COUNT) "ICON_WIFI_SECURED_" '%s%d')
+if [ "$WIFI_ENABLED" = "1" ]; then
+    if [ -z "$SSID" ]; then
+    	FORMAT=$FORMAT_NO_CONNECTION
+    	FIELDS["ssid"]="-disconnected-"
+    	FIELDS["signal"]="0"
+    	FIELDS["icon"]=$ICON_NO_WIFI_CONNECTION
+    else
+        if [ -n $SECURE ]; then
+            	FIELDS["icon"]=$(get_value_by_index $(scale_perc_to_level $SIGNAL $ICON_WIFI_COUNT) "ICON_WIFI_SECURED_" '%s%d')
+        else
+            FIELDS["icon"]=$(get_value_by_index $(scale_perc_to_level $SIGNAL $ICON_WIFI_COUNT) "ICON_WIFI_" '%s%d')
+        fi
+    fi
 else
-    FIELDS["icon"]=$(get_value_by_index $(scale_perc_to_level $SIGNAL $ICON_WIFI_COUNT) "ICON_WIFI_" '%s%d')
+    FORMAT=$FORMAT_NO_CONNECTION
+    FIELDS["ssid"]="n/a"
+    FIELDS["signal"]="0"
+    FIELDS["icon"]=$ICON_NO_WIFI
 fi
 
 FIELDS["color"]="$(get_color_by_perc $SIGNAL)"
