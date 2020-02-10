@@ -9,8 +9,8 @@
 
 source "$(dirname $0)/helpers.sh"
 
-ICON_ETH=$(echo -e \\uf6ff)
-ICON_NO_CONNECTION="X"
+ICON_ETH=$(echo -e \\uf0ac)
+ICON_NO_CONNECTION=$ICON_ETH
 
 apply_config_value "_icon_eth" "ICON_ETH"
 apply_config_value "_icon_no_connection" "ICON_NO_CONNECTION"
@@ -19,27 +19,24 @@ FORMAT_CONNECTION="{icon} {ip}"
 FORMAT_NO_CONNECTION=""
 apply_config_value "_format" "FORMAT_CONNECTION"
 apply_config_value "_format_no_connection" "FORMAT_NO_CONNECTION"
-FORMAT=$FORMAT_NO_CONNECTION
+FORMAT="$FORMAT_NO_CONNECTION"
 
 IFS=':' RAW=($(nmcli -t -f name,type,device connection show --active | grep ethernet))
 CONN="${RAW[0]}"
-COLOR=$(get_color_by_level "0")
 
 declare -A FIELDS
 FIELDS["ip"]="-disconnected-"
-FIELDS["icon"]=$ICON_NO_CONNECTION
+FIELDS["icon"]="$ICON_NO_CONNECTION"
+FIELDS["color"]="$(get_color_by_level "0")"
 
 if [ -n "$CONN" ]; then
 	IFS=' ' RAW=($(nmcli -t connection show "$CONN" | grep ip_address))
-	FIELDS["ip"]=${RAW[-1]}
-	FIELDS["icon"]=$ICON_ETH
-	COLOR=$(get_color_by_level "10")
-	FORMAT=$FORMAT_CONNECTION
+	FIELDS["ip"]="${RAW[-1]}"
+	FIELDS["icon"]="$ICON_ETH"
+	FIELDS["color"]="$(get_color_by_level "10")"
+	FORMAT="$FORMAT_CONNECTION"
 fi
 
-
-OUTPUT=$(format_output "$FORMAT")
-
-pango_markup "$OUTPUT" "$COLOR"
+style_output "$(format_output "$FORMAT")"
 
 exit 0

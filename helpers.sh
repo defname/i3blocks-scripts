@@ -22,12 +22,13 @@ LC_NUMERIC="en_US.UTF-8"
 
 function powerline_style {
     local str="$1"
+    local repair_str=""
     
     if [ -n "$_powerline_color" ]; then
         if [ -n "$_powerline_color_left" ] && [ -n "$_powerline_symbol_left" ]; then
-            printf "<span background='%s' foreground='%s'>%s</span>" "$_powerline_color_left" "$_powerline_color" "$_powerline_symbol_left"
+            printf "<span$repair_str background='%s' foreground='%s'>%s</span>" "$_powerline_color_left" "$_powerline_color" "$_powerline_symbol_left"
         fi
-        printf "<span background='%s'>%s" "$_powerline_color" "$str"
+        printf "<span$repair_str background='%s'>%s" "$_powerline_color" "$str"
         if [ -n "$_powerline_color_right" ] && [ -n "$_powerline_symbol_right" ]; then
             printf "<span foreground='%s'>%s</span>" "$_powerline_color_right" "$_powerline_symbol_right"
         fi
@@ -73,12 +74,17 @@ function apply_config_value {
 }
 
 function apply_config_value_array {
-    local global_varname=$1
-    local intern_varname=$2
-    local count=$3
+    local global_varname="$1"
+    local intern_varname="$2"
+    local count="$3"
+    local number_format="%d"
 
+    if [ -n "$4" ]; then
+        number_format="$4"
+    fi
+        
     for n in $(seq 0 $(echo "$count-1" | bc)); do
-        apply_config_value "$global_varname$n" "$intern_varname$n"
+        apply_config_value "$(printf "%s$number_format" "$global_varname" "$n")" "$(printf "%s$number_format" "$intern_varname" "$n")"
     done
 }
 
@@ -161,9 +167,7 @@ function generate_gauge {
 }
 
 # apply the i3blocks config
-for n in $(seq 0 10); do
-	apply_config_value $(printf '_color%02d' $n) $(printf 'color%02d' $n)
-done
+apply_config_value_array '_color' 'color' 11 '%02d'
 
 # put own definitions from i3blocks config in CONFIG variable
 
