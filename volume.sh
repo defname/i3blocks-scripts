@@ -36,5 +36,5 @@ FIELDS["vol"]="$VOLUME"
 FIELDS["icon"]="$ICON"
 FIELDS["color"]="$(get_color_by_perc $(echo "100-$VOLUME" | bc))"
 
-echo "$(format_output "$FORMAT")"
+style_output "$(format_output "$FORMAT")"
 

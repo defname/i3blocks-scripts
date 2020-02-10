@@ -20,7 +20,7 @@ if [ "$UPDATE_COUNT" -gt "0" ]; then
         CRITICAL_PERC=$(echo "100-$UPDATE_COUNT*100/$CRITICAL_COUNT" | bc )
         FIELDS["color"]=$(get_color_by_perc $CRITICAL_PERC)
     fi
-    echo "$(format_output "$FORMAT")"
+    style_output "$(format_output "$FORMAT")"
 fi
 
 exit 0

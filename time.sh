@@ -19,7 +19,7 @@ FIELDS["weekday"]=$weekday
 FIELDS["date"]=$date
 FIELDS["time"]=$time
 
-echo $(format_output "$FORMAT")
+pango_markup "$(format_output "$FORMAT")" "#ffffff"
 exit 0
 
 case $hour in

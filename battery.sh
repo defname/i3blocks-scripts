@@ -69,6 +69,6 @@ declare -A FIELDS
 FIELDS["perc"]=$PERC
 FIELDS["icon"]=$ICON
 FIELDS["color"]=$(get_color_by_perc "$PERC")
-echo $(format_output "$FORMAT")
+style_output "$(format_output "$FORMAT")"
 
 exit 0

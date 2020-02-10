@@ -81,7 +81,7 @@ fi
 
 FIELDS["color"]="$(get_color_by_perc $SIGNAL)"
 
-echo "$(format_output "$FORMAT")"
+style_output "$(format_output "$FORMAT")"
 
 exit 0
 

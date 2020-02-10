@@ -20,6 +20,27 @@ color10="#88B090"
 # use dots instead of commas, that caused errors with printf
 LC_NUMERIC="en_US.UTF-8"
 
+function powerline_style {
+    local str="$1"
+    
+    if [ -n "$_powerline_color" ]; then
+        if [ -n "$_powerline_color_left" ] && [ -n "$_powerline_symbol_left" ]; then
+            printf "<span background='%s' foreground='%s'>%s</span>" "$_powerline_color_left" "$_powerline_color" "$_powerline_symbol_left"
+        fi
+        printf "<span background='%s'>%s" "$_powerline_color" "$str"
+        if [ -n "$_powerline_color_right" ] && [ -n "$_powerline_symbol_right" ]; then
+            printf "<span foreground='%s'>%s</span>" "$_powerline_color_right" "$_powerline_symbol_right"
+        fi
+        printf "</span>\n"
+    else
+        echo "$str"
+    fi
+}
+
+function style_output {
+    local str="$1"
+    powerline_style "$str"
+}
 # colorize text with mango markup ($markup is a global variable, set by
 # i3blocks and can be configured in the i3blocks configuration file)
 #
@@ -32,10 +53,10 @@ function pango_markup {
 		if [ "$markup" != "pango" ]; then
 			echo $str
 		else
-			echo "<span color=\"$color\">$str</span>"
+			powerline_style "<span foreground=\"$color\">$str</span>"
 		fi
 	fi
-}	
+}
 
 # test if a global variable is set and if so apply it to another (local) one
 # Arguments:
@@ -143,4 +164,6 @@ function generate_gauge {
 for n in $(seq 0 10); do
 	apply_config_value $(printf '_color%02d' $n) $(printf 'color%02d' $n)
 done
+
+# put own definitions from i3blocks config in CONFIG variable
 

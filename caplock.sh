@@ -15,6 +15,7 @@ FIELDS["text"]=""
 if [ -z $(xset q | egrep -e 'Caps Lock:[[:space:]]*off') ]; then
 	FIELDS["text"]=$ENABLED_CAPTION
 fi
+FIELDS["color"]="$(get_color_by_perc 0)"
 OUTPUT=$(format_output "$FORMAT")
-pango_markup "$OUTPUT" "$(get_color_by_perc 0)"
+style_output "$(format_output "$FORMAT")"
 
