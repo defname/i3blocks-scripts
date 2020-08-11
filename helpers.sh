@@ -21,6 +21,7 @@ color10="#88B090"
 LC_NUMERIC="en_US.UTF-8"
 
 function powerline_style {
+    #local str="<sup><span size='medium'>$1</span></sup>"
     local str="$1"
     local repair_str=""
     
