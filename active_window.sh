@@ -19,6 +19,9 @@ xtitle -s -f '%u\n' | while read ID; do
 	else
 		FIELDS["title"]="$NAME"
 	fi
+    if [[ "${FIELDS["title"]}"=="" ]]; then
+        FIELDS["title"]=" "
+    fi
     FIELDS["color"]="#999999"
 	style_output "$(format_output "$FORMAT")"
 done 
