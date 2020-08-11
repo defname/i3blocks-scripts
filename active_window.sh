@@ -19,7 +19,7 @@ xtitle -s -f '%u\n' | while read ID; do
 	else
 		FIELDS["title"]="$NAME"
 	fi
-    if [[ "${FIELDS["title"]}"=="" ]]; then
+    if [[ -z "${FIELDS["title"]}" ]]; then
         FIELDS["title"]=" "
     fi
     FIELDS["color"]="#999999"
