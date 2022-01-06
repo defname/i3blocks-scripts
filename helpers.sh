@@ -24,7 +24,7 @@ function powerline_style {
     #local str="<sup><span size='medium'>$1</span></sup>"
     local str="$1"
     local repair_str=""
-    
+
     if [ -n "$_powerline_color" ]; then
         if [ -n "$_powerline_color_left" ] && [ -n "$_powerline_symbol_left" ]; then
             printf "<span$repair_str background='%s' foreground='%s'>%s</span>" "$_powerline_color_left" "$_powerline_color" "$_powerline_symbol_left"
@@ -50,12 +50,14 @@ function style_output {
 function pango_markup {
 	if [ $# -ne 2 ]; then echo "pango_markup" && exit 1; fi
 	local str=$1
-	local color=$2
+	#local color=$2
 	if [ -n "$str" ]; then
 		if [ "$markup" != "pango" ]; then
 			echo $str
 		else
-			powerline_style "<span foreground=\"$color\">$str</span>"
+			#powerline_style "<span foreground='$color'>$str</span>"
+            # (should use line above, but doesnt work) workaround: 
+            powerline_style "$str"
 		fi
 	fi
 }
