@@ -24,15 +24,16 @@ xtitle -s -f '%u\n' | while read ID; do
     declare -a PROP_LIST=("NET_WM_NAME" "WM_NAME" "NET_ICON_NAME" "ICON_NAME" "CLASS")
     for PROP in "${PROP_LIST[@]}"; do
         value="$(get_prop "$XPROP" "$PROP")"
-#DEBUG
-        # DEBUG
-        # echo "$PROP -> ${FIELDS["title"]}"  >> /tmp/test
+        # if property isn't empty use it as window title and stop searching
         if [[ -n "$value" ]]; then
+            # escape special characters in window title
+            value="$(echo $value | sed 's_&_&amp;_g; s_<_&lt;_g; s_>_&gt;_g;' $value)" 
             FIELDS["title"]="$value"
             break;
         fi
     done
 
+    # set empty output if no window title is found
     if [[ -z "${FIELDS['title']}" ]]; then
         FIELDS["title"]=" "
     fi
@@ -45,30 +46,3 @@ done
 exit
 
 
-xtitle -s -f '%u\n' | while read ID; do
-	XPROP=$(xprop -id $ID)
-	CLASS=$(echo "$XPROP" | grep 'WM_CLASS(STRING)' | sed -r 's/.*"(.*?)".*?/\1/')
-    ICON_NAME=$(echo "$XPROP" | grep '_NET_WM_ICON_NAME(UTF8_STRING)')
-    ICON_NAME=${ICON_NAME#*=\ \"}
-    ICON_NAME=${ICON_NAME%\"}
-    NAME=$(echo "$XPROP" | grep 'WM_NAME')
-    echo "$ICON_NAME --- $NAME" >> /tmp/test
-	
-    if [[ "$ICON_NAME" =~ ^_NET_WM_ICON_NAME\(UTF8_STRING\) ]]; then
-		FIELDS["title"]="$CLASS"
-	else
-		FIELDS["title"]="$ICON_NAME"
-	fi
-
-    if [[ -z "${FIELDS['title']}" ]]; then
-        FIELDS["title"]="$NAME"
-    fi
-
-    if [[ -z "${FIELDS['title']}" ]]; then
-        FIELDS["title"]=" "
-    fi
-    FIELDS["title"]="${FIELDS["title"]}"
-    #FIELDS["color"]="#999999"
-	#style_output "$(format_output "$FORMAT")"
-    format_output "$FORMAT"
-done 
