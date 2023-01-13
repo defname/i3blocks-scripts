@@ -27,7 +27,7 @@ if __name__ == "__main__":
     if len(sys.argv) < 4 or (len(sys.argv)-4)%2 != 0:
         help()
     
-    print(sys.argv[1])
+    print("#" + sys.argv[1])
     
     for i in range(0, len(sys.argv)-2, 2):
         colorlist = generateGradient(hexToRGB(sys.argv[i+1]), int(sys.argv[i+2]), hexToRGB(sys.argv[i+3]))

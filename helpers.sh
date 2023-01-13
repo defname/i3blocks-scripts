@@ -2,17 +2,29 @@
 
 # default values
 
-color00="#E99393"
-color01="#E3A192"
-color02="#DDB091"
-color03="#D7BE91"
-color04="#D1CD90"
-color05="#CCDC90"
-color06="#BED390"
-color07="#B0CA90"
-color08="#A3C190"
-color09="#95B890"
-color10="#88B090"
+#color00="#E99393"
+#color01="#E3A192"
+#color02="#DDB091"
+#color03="#D7BE91"
+#color04="#D1CD90"
+#color05="#CCDC90"
+#color06="#BED390"
+#color07="#B0CA90"
+#color08="#A3C190"
+#color09="#95B890"
+#color10="#88B090"
+
+color00="#ac4142"
+color01="#9f535a"
+color02="#926472"
+color03="#86768a"
+color04="#7987a2"
+color05="#6c99ba"
+color06="#709490"
+color07="#739490"
+color08="#77927a"
+color09="#7a8f65"
+color10="#7e8d50"
 
 # for later use
 # ▁▂▃▄▅▆▇█
@@ -106,7 +118,7 @@ function format_output {
 	for k in ${!FIELDS[@]}; do
 		output=${output/\{$k\}/${FIELDS[$k]}}
 	done
-	echo "$output"
+    echo "$output"
 }
 
 
@@ -167,6 +179,10 @@ function generate_gauge {
 	empty="▁▁▁▁▁▁▁▁"
 	out="${gauge:0:$level}${empty:0:$diff}"
 	echo $out
+}
+
+function dbm_to_percentage {
+    echo "$(($1 + 130))"
 }
 
 # apply the i3blocks config

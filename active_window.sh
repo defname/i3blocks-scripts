@@ -27,7 +27,10 @@ xtitle -s -f '%u\n' | while read ID; do
         # if property isn't empty use it as window title and stop searching
         if [[ -n "$value" ]]; then
             # escape special characters in window title
-            value="$(echo $value | sed 's_&_&amp;_g; s_<_&lt;_g; s_>_&gt;_g;' $value)" 
+            value="$(echo $value | sed 's_&_&amp;_g; s_<_&lt;_g; s_>_&gt;_g;;' $value)"
+            value=${value//$'\n'/}
+            value=${value:0:250}
+            # value=$(printf "%q" "$value")
             FIELDS["title"]="$value"
             break;
         fi

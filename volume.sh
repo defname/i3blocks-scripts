@@ -9,6 +9,9 @@ source "$(dirname $0)/helpers.sh"
 FORMAT="{icon} {vol}%"
 apply_config_value "_format" "FORMAT"
 
+# Query amixer for the current volume and whether or not the speaker is muted
+#VOLUME="$(amixer -c 0 get Master | tail -1 | awk '{print $4}' | sed 's/[^0-9]*//g')"
+#MUTE="$(amixer -c 0 get Master | tail -1 | awk '{print $6}' | sed 's/[^a-z]*//g')"
 VOLUME=$(pamixer --get-volume)
 MUTE=$(pamixer --get-mute)
 
