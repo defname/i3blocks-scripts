@@ -12,24 +12,24 @@ declare -A FIELDS
 function get_prop {
     XPROP=$1
     PROP_NAME=$2
-    TEXT=$(echo "$XPROP" | grep -e ".*$PROP_NAME.*= \".*\"" | sed -e 's/^.* = .*"\(.*\)"$/\1/' | tr -d '\n')
-    echo "$TEXT"
+    TEXT=$(echo "$XPROP" | grep -e "^$PROP_NAME.*= \".*\"$" | sed -e 's/^.* = "\(.*\)"$/\1/' | tr -d '\n')
+    echo "$TEXT" | xargs
 }
 
 xtitle -s -f '%u\n' | while read ID; do
-    XPROP=$(xprop -id $ID)
+    XPROP="$(xprop -id $ID)"
     FIELDS["title"]=" "
 
     # try different properties where the window title is typically stored
-    declare -a PROP_LIST=("NET_WM_NAME" "WM_NAME" "NET_ICON_NAME" "ICON_NAME" "CLASS")
+    declare -a PROP_LIST=("NET_WM_NAME(STRING)" "WM_NAME(STRING)" "WM_NAME(UTF8_STRING)" "NET_ICON_NAME(STRING)" "NET_ICON_NAME(UTF8_STRING" "ICON_NAME" "CLASS")
     for PROP in "${PROP_LIST[@]}"; do
         value="$(get_prop "$XPROP" "$PROP")"
         # if property isn't empty use it as window title and stop searching
         if [[ -n "$value" ]]; then
             # escape special characters in window title
-            value="$(echo $value | sed 's_&_&amp;_g; s_<_&lt;_g; s_>_&gt;_g;;' $value)"
-            value=${value//$'\n'/}
-            value=${value:0:250}
+            value="$(echo "$value" | sed 's_&_&amp;_g; s_<_&lt;_g; s_>_&gt;_g;;')"
+            value="${value//$'\n'/}"
+            value="${value:0:250}"
             # value=$(printf "%q" "$value")
             FIELDS["title"]="$value"
             break;
@@ -38,8 +38,10 @@ xtitle -s -f '%u\n' | while read ID; do
 
     # set empty output if no window title is found
     if [[ -z "${FIELDS['title']}" ]]; then
-        FIELDS["title"]=" "
+        FIELDS["title"]="###"
     fi
+
+
     #FIELDS["color"]="#999999"
 	#style_output "$(format_output "$FORMAT")"
     format_output "$FORMAT"
